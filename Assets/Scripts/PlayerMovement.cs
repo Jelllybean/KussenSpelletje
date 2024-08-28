@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 
     public AudioSource coolAudio;
     public AudioSource hotAudio;
+
+    public GameObject canvas;
 
     void Start()
     {
@@ -49,6 +52,13 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 StartCoroutine(Rotate());
+            }
+        }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(0);
             }
         }
     }
@@ -182,5 +192,6 @@ public class PlayerMovement : MonoBehaviour
     public void Die()
     {
         pillowArt.gameObject.SetActive(false);
+        canvas.SetActive(true);
     }
 }
