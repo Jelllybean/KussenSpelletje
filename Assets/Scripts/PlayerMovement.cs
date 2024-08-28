@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform pillowArt;
 
     public bool isColdDown;
+    public GameObject icePlatform;
+    public GameObject glassPlatform;
 
     void Start()
     {
@@ -22,16 +24,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        isGrounded = CheckGround();
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (pillowArt.gameObject.activeSelf)
         {
-            StartCoroutine(DoJump());
+            rigidBody.velocity = new Vector2(1000 * Time.deltaTime, rigidBody.velocity.y);
+            isGrounded = CheckGround();
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                StartCoroutine(DoJump());
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                StartCoroutine(Rotate());
+            }
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            StartCoroutine(Rotate());
-        }
     }
 
     IEnumerator DoJump()
@@ -59,22 +66,24 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator Rotate()
     {
         Debug.Log(pillowArt.eulerAngles.z);
-        if(pillowArt.eulerAngles.z == 0)
+        if (pillowArt.eulerAngles.y == 0)
         {
-            while (pillowArt.eulerAngles.z < 180f)
+            while (pillowArt.eulerAngles.y < 180f)
             {
-                pillowArt.Rotate(0, 0, Time.deltaTime * 360, Space.Self);
+                //pillowArt.Rotate(0, 0, Time.deltaTime * 360, Space.Self);
+                pillowArt.Rotate(0, Time.deltaTime * 480, 0, Space.Self);
                 yield return null;
             }
             //pillowArt.RotateAround(pillowArt.position, pillowArt.right, 180f);
-            pillowArt.eulerAngles = new Vector3(0, 0, 180f);
+            pillowArt.eulerAngles = new Vector3(0, 180f, 0);
         }
-        else if(pillowArt.eulerAngles.z == 180f)
+        else if (pillowArt.eulerAngles.y == 180f)
         {
-            while (pillowArt.eulerAngles.z < 350f)
+            while (pillowArt.eulerAngles.y < 350f)
             {
                 Debug.Log(pillowArt.eulerAngles.z);
-                pillowArt.Rotate(0, 0, Time.deltaTime * 360, Space.Self);
+                //pillowArt.Rotate(0, 0, Time.deltaTime * 360, Space.Self);
+                pillowArt.Rotate(0, Time.deltaTime * 480, 0, Space.Self);
                 yield return null;
             }
             //pillowArt.RotateAround(pillowArt.position, pillowArt.right, 180f);
@@ -113,5 +122,45 @@ public class PlayerMovement : MonoBehaviour
         {
             return isGrounded;
         }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Debug.Log(collision.gameObject.tag);
+        if (collision.gameObject.CompareTag("Water"))
+        {
+            if (isColdDown)
+            {
+                icePlatform.SetActive(true);
+                glassPlatform.SetActive(false);
+            }
+            else
+            {
+                Die();
+            }
+        }
+        else if (collision.gameObject.CompareTag("Sand"))
+        {
+            if (!isColdDown)
+            {
+                icePlatform.SetActive(false);
+                glassPlatform.SetActive(true);
+            }
+            else
+            {
+                Die();
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        //icePlatform.SetActive(false);
+        //glassPlatform.SetActive(false);
+    }
+
+    public void Die()
+    {
+        pillowArt.gameObject.SetActive(false);
     }
 }
