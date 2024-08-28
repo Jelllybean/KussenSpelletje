@@ -23,16 +23,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         isColdDown = true;
-        if (isColdDown)
-        {
-            coolAudio.Play();
-            hotAudio.Pause();
-        }
-        else
-        {
-            coolAudio.Pause();
-            hotAudio.Play();
-        }
     }
 
     void Update()
@@ -141,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning("tering");
             return isGrounded;
         }
     }
