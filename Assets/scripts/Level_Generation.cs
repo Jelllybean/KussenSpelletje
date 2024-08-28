@@ -11,14 +11,10 @@ public class Level_Generation : MonoBehaviour
     float incr = 0;
     float height = 0;
 
-    public GameObject platform;
-    public GameObject platform2;
     public List <GameObject> Platforms = new List<GameObject> ();
 
     public void Start()
     {
-        //Platforms.Add (platform);
-        //Platforms.Add(platform2);
         StartCoroutine(Spawn());
 
     }
