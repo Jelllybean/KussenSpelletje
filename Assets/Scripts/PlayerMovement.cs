@@ -17,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     public GameObject icePlatform;
     public GameObject glassPlatform;
 
+    public AudioSource coolAudio;
+    public AudioSource hotAudio;
+
     void Start()
     {
         isColdDown = true;
@@ -38,7 +41,6 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(Rotate());
             }
         }
-
     }
 
     IEnumerator DoJump()
@@ -81,7 +83,6 @@ public class PlayerMovement : MonoBehaviour
         {
             while (pillowArt.eulerAngles.y < 350f)
             {
-                Debug.Log(pillowArt.eulerAngles.z);
                 //pillowArt.Rotate(0, 0, Time.deltaTime * 360, Space.Self);
                 pillowArt.Rotate(0, Time.deltaTime * 480, 0, Space.Self);
                 yield return null;
@@ -90,7 +91,17 @@ public class PlayerMovement : MonoBehaviour
             pillowArt.eulerAngles = new Vector3(0, 0, 0);
         }
         isColdDown = !isColdDown;
-        Debug.LogWarning(pillowArt.eulerAngles.z);
+
+        if(isColdDown)
+        {
+            coolAudio.Play();
+            hotAudio.Pause();
+        }
+        else
+        {
+            coolAudio.Pause();
+            hotAudio.Play();
+        }
     }
 
     private bool CheckGround()
@@ -120,13 +131,13 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning("tering");
             return isGrounded;
         }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.CompareTag("Water"))
         {
             if (isColdDown)
